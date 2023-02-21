@@ -1,0 +1,68 @@
+@startuml Lab1
+
+class Person {
+  - ID: int
+  - name: string
+  + newPerson(name: string): int
+}
+
+class User {
+  - habits: list<Habit>
+  - habitNum: int
+  - coach: Coach *
+  + newUser(name: string): int
+  + displayHabits(habits: list<Habit>): list<Habit>
+}
+
+class Coach extends Person {
+  - users: list<User>
+  + newCoach(name: string): int
+  + displayAllUsers(users: list<User>): bool
+  + addUser(users: list<User>, userID: int): bool
+  + deleteUser(users: list<User>, userID: int): bool
+  + viewUserHabits(user: User): list<Habit>
+  + checkinPushNotification(userID: int, checkin: Checkin): void
+}
+
+class Habit {
+  - habitID: int
+  - habitName: string
+  - habitHistory: HabitHistory *
+  + newHabit(name: string): Habit *
+  + displayHabit(): void
+  + deleteHabit(habit: Habit *, habitID: int *): void
+  + checkin(habitHistory: HabitHistory *): void
+}
+
+class HabitHistory {
+  - habitID: int
+  - habitCheckins: list<Checkin>
+  + newCheckin(): Checkin *
+  + displayHistory(habitCheckins: list<Checkin>): void
+}
+
+class Checkin {
+  - habitCheckinID: integer
+  - checkinDate: date
+  - comments: list<Comment>
+  + addComment(comment: Comment): Comment
+  + displayCheckin(habitCheckinID: int): void
+}
+
+class Comment {
+  - commentID: integer
+  - commentText: string
+  - commentDate: date
+  - commenter: Person *
+  + displayComment(): void
+  + addComment(comments: list<Comment>, commenter: Person *): Comment *
+}
+User --|> Person
+Coach --|> Person
+User "0..*" -- "0..1" Person
+User "1..1" -- "0..*" Habit
+Habit "1..1" -- "1..1" HabitHistory
+HabitHistory "1..1" -- "0..*" Checkin
+Checkin "1..1" -- "0..*" Comment
+
+@enduml

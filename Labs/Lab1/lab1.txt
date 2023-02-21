@@ -1,0 +1,43 @@
+Coach
++ users: list(User)
+--
++ newCoach(string): int
++ displayAllUsers(users): bool
++ addUser(users, userID): bool
++ deleteUser(users, userID): bool
++ viewUserHabits(User): list(Habit)
++ checkinPushNotification(UserID, Checkin):void
+
+Habit
++ habitID: int
++ habitName: String
++ habitHistory: reference
+--
++ newHabit(string): Habit*
++ displayHabit(): void
++ deleteHabit(Habit*, int*): void
++ checkin(HabitHistory*): void
+
+HabitHistory
++ habitID: int
++ habitCheckins: list(Checkin)
+--
++ newCheckin(): Checkin*
++ displayHistory(habitCheckins): void
+
+Checkin
++ habitCheckinID: integer
++ checkinDate: date
++ comments: list(Comment)
+--
++ addComment(Comment): Comment
++ displayCheckin(habitCheckinID):void
++ addComment(comments, Person*):Comment*
+
+Comment
++ commentID: integer
++ commentText: string
++ commentDate: date
++ commenter: Person *
+--
++ displayComment(): void
