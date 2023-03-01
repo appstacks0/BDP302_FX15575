@@ -42,7 +42,7 @@ contract Auction {
         
         // ** Start code here. 4 lines approximately. ** /
         auctioneer = msg.sender;
-        myRule = IRule({
+        rule = IRule({
             startingPrice: _startingPrice,
             minimumStep: _minimumStep
         });
@@ -61,13 +61,17 @@ contract Auction {
         
         
         // ** Start code here. 3 lines approximately. ** /
-        IBidder bidder = bidders[_account];
+        IBidder storage bidder = bidders[_account];
         bidder.token = _token;
         bidder.deposit = 0;
 	   // ** End code here. **/
     }
 
-    
+    function getBidder(address _account) public view returns (IBidder memory) {
+        return bidders[_account];
+    }
+
+
     // Start the session.
     function startSession() public {
         state = State.STARTED;
@@ -86,10 +90,13 @@ contract Auction {
         IBidder storage currentBidder = bidders[bidderAddr];
         
         // ** Start code here.  ** /
-        require();
+        require(_price > currentPrice);
+        require((_price - currentPrice) % rule.minimumStep == 0);
+        require(currentBidder.token >= _price);
         // Tracking deposit
-		totalDeposit += ;
-        
+		totalDeposit += _price;
+        currentBidder.token -= _price;
+        currentBidder.deposit += _price;
         
         // ** End code here. **/
         
@@ -110,7 +117,10 @@ contract Auction {
         // + When Auctioneer annouced more than 3 times, switch session to Closing state.
         
         // ** Start code here.  ** /
-       
+        announcementTimes++;
+        if (announcementTimes > 3){
+            state = State.CLOSING;
+        }
 	   
         // ** End code here. **/
     }
