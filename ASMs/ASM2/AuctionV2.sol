@@ -51,8 +51,32 @@ contract Auction {
         // ** End code here. ** /
     }
 
+    // Modifier to check if the current state is the expected state
+    modifier inState(State _state) {
+        require(state == _state);
+        _;
+    }
+
+    // Modifier to check if the current user is the auctioneer
+    modifier onlyAuctioneer() {
+        require(msg.sender == auctioneer);
+        _;
+    }
+
+    // Modifier to check if the current user is not the Winner
+    modifier notWinner() {
+        require(msg.sender != currentWinner);
+        _;
+    }
+
+    
+
     // Register new Bidder
-    function register(address _account, uint8 _token) public {
+    function register(address _account, uint8 _token)
+        public
+        onlyAuctioneer
+        inState(State.CREATED)
+    {
         // Task #2 - Register the bidder
         // + Initialize a Bidder with address and token are given.
         // + Initialize a Bidder's deposit with 0
@@ -70,11 +94,11 @@ contract Auction {
     }
 
     // Start the session.
-    function startSession() public {
+    function startSession() public onlyAuctioneer inState(State.CREATED) {
         state = State.STARTED;
     }
 
-    function bid(uint8 _price) public {
+    function bid(uint8 _price) public inState(State.STARTED) {
         // Task #3 - Bid by Bidders
         // + Check the price with currentPirce and minimumStep. Revert if invalid.
         // + Check if the Bidder has enough token to bid. Revert if invalid.
@@ -110,7 +134,7 @@ contract Auction {
         announcementTimes = 0;
     }
 
-    function announce() public {
+    function announce() public onlyAuctioneer inState(State.STARTED) {
         // Task #4 - Handle announcement.
         // + When Auctioneer annouce, increase the counter.
         // + When Auctioneer annouced more than 3 times, switch session to Closing state.
@@ -124,7 +148,7 @@ contract Auction {
         // ** End code here. **/
     }
 
-    function getDeposit() public {
+    function getDeposit() public notWinner inState(State.CLOSING) {
         // Task #5 - Handle get Deposit.
         // + Allow bidders (except Winner) to withdraw their deposit
         // + When all bidders' deposit are withdrew, close the session
@@ -134,9 +158,6 @@ contract Auction {
 
         // + Allow bidders (except Winner) to withdraw their deposit
         IBidder storage currentBidder = bidders[msg.sender];
-        if (msg.sender == currentWinner) {
-            revert();
-        }
         uint8 amount = currentBidder.deposit;
         currentBidder.deposit = 0;
         currentBidder.token += amount;
