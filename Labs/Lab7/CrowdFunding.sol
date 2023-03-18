@@ -28,11 +28,7 @@ contract CrowdFunding {
     }
 
     event ContributeEvent(address _sender, uint256 _value);
-    event CreateRequestEvent(
-        string _description,
-        address _recipient,
-        uint256 _value
-    );
+    event CreateRequestEvent(string _description,address _recipient,uint256 _value);
     event MakePaymentEvent(address _recipient, uint256 _value);
 
     modifier onlyAdmin() {
@@ -71,5 +67,44 @@ contract CrowdFunding {
         address payable recipient = payable(msg.sender);
         uint value = contributors[msg.sender];
         recipient.transfer(value);
+        //equivalent to:
+        //payable(msg.sender).transfer(contributors[msg.sender]);
+
+        contributors[msg.sender] = 0;
+    }
+
+    function createRequest(string calldata _description, address payable _recipient, uint _value) public onlyAdmin{
+        //numRequests starts from zero
+        Request storage newRequest = requests[numRequests];
+        numRequests++;
+
+        newRequest.description = _description;
+        newRequest.recipient = _recipient;
+        newRequest.value = _value;
+        newRequest.completed = false;
+        newRequest.noOfVoters = 0;
+
+        emit CreateRequestEvent(_description, _recipient, _value);
+    }
+
+    function voteRequest(uint _requestNo) public{
+        require(contributors[msg.sender] > 0, "You must be a contributor to vote!");
+
+        Request storage thisRequest = requests[_requestNo];
+        require(thisRequest.voters[msg.sender] = false, "You have already voted!");
+
+        thisRequest.voters[msg.sender] = true;
+        thisRequest.noOfVoters++;
+    }
+
+    function makePayment(uint _requestNo) public onlyAdmin{
+        Request storage thisRequest = requests[_requestNo];
+        require(thisRequest.completed = false, "The request has been already completed!");
+
+        require(thisRequest.noOfVoters > noOfContributors/2, "The request needs more than 50% of the contributors.");
+        thisRequest.recipient.transfer(thisRequest.value);
+        thisRequest.completed = true;
+
+        emit MakePaymentEvent(thisRequest.recipient, thisRequest.value);
     }
 }
