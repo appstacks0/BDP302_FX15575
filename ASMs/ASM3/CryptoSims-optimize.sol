@@ -293,11 +293,11 @@ contract TheFunixCryptoSim is ERC721, Ownable  {
 
         // TASK #5: Encode attributes into uint32
         // START CODE HERE
-        genes |= attributes.body;
-        genes |= uint32(attributes.eye) << 2;
-        genes |= uint32(attributes.hairstyle) << 5;
-        genes |= uint32(attributes.outfit) << 12;
-        genes |= uint32(attributes.accessory) << 17;
+        genes |= uint32(attributes.accessory) << 0;
+        genes |= uint32(attributes.outfit) << 5;
+        genes |= uint32(attributes.hairstyle) << 10;
+        genes |= uint32(attributes.eye) << 17;
+        genes |= uint32(attributes.body) << 20;
         genes |= uint32(attributes.hiddenGenes) << 22;
         genes |= uint32(attributes.generation) << 24;
         // END CODE HERE
@@ -318,11 +318,11 @@ contract TheFunixCryptoSim is ERC721, Ownable  {
 
         // TASK #6: Decode uint32 gene to attributes
         // START CODE HERE
-        attributes.body = uint8(genes % 4);
-        attributes.eye = uint8((genes / 4) % 8);
-        attributes.hairstyle = uint8((genes / 32) % 128);
-        attributes.outfit = uint8((genes / 4096) % 32);
-        attributes.accessory = uint8((genes / 131072) % 32);
+        attributes.accessory = uint8(genes % 32);
+        attributes.outfit = uint8((genes / 32) % 32);
+        attributes.hairstyle = uint8((genes / 1024) % 128);
+        attributes.eye = uint8((genes / 131072) % 8);
+        attributes.body = uint8((genes / 1048576) % 4);
         attributes.hiddenGenes = uint8((genes / 4194304) % 4);
         attributes.generation = uint8((genes / 16777216) % 256);
         // END CODE HERE
