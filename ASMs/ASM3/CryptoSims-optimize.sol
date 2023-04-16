@@ -190,31 +190,16 @@ contract TheFunixCryptoSim is ERC721, Ownable  {
         // READMORE: There is better way to init create Genesis without encoding
         // TASK #7: Implement without encoding
 
-        // START CODE HERE
-            
-        
-        SimAttributes memory firstAtrributes = SimAttributes({
-          body: 0,
-          eye: 0,
-          hairstyle: 0,
-          outfit: 0,
-          accessory: 0,
-          hiddenGenes: 0,
-          generation: 0
-        });
-
-        SimAttributes memory secondAtrributes = SimAttributes({
-          body: 3,
-          eye: 7,
-          hairstyle: 127,
-          outfit: 31,
-          accessory: 31,
-          hiddenGenes: 0,
-          generation: 0
-        });
-        
+        // START CODE HERE           
+          
         sims.push(Sim({
-            genes: encodeAttributes(firstAtrributes),
+            body: 0,
+            eye: 0,
+            hairstyle: 0,
+            outfit: 0,
+            accessory: 0,
+            hiddenGenes: 0,
+            generation: 0,
             matronId: 0,
             sireId: 0
         }));
@@ -222,7 +207,13 @@ contract TheFunixCryptoSim is ERC721, Ownable  {
         super._mint(msg.sender, 0);
 
         sims.push(Sim({
-            genes: encodeAttributes(secondAtrributes),
+            body: 3,
+            eye: 7,
+            hairstyle: 127,
+            outfit: 31,
+            accessory: 31,
+            hiddenGenes: 0,
+            generation: 0,
             matronId: 0,
             sireId: 0
         }));
